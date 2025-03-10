@@ -1,7 +1,19 @@
 library flutter_utils;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+import 'dart:developer';
+
+export 'extensions/extensions.dart';
+export 'local/locals.dart';
+export 'models/models.dart';
+export 'services/services.dart';
+export 'state_management/state_management.dart';
+export 'utils/utils.dart';
+export 'widgets/widgets.dart';
+
+class MHIFlutterLibrary {
+  MHIFlutterLibrary();
+
+  void initialise() {
+    log('[MHI Flutter Library]: INITIALISED', level: 2000, name: 'Test');
+  }
 }
