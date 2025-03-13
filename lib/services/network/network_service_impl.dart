@@ -177,7 +177,8 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Handles successful HTTP responses and wraps them in an [ApiResponse] object.
   ApiResponse _handleResponse(Response res) {
-    return ApiResponse(
+    return HeaderApiResponse(
+      headers: res.headers.map,
       statusCode: res.statusCode,
       data: res.data,
     );
@@ -189,13 +190,13 @@ class NetworkServiceImpl implements NetworkService {
 
     if (error.response?.statusCode == 401 || error.response?.statusCode == 403) {
       throw ApiFailure(
-        message: error.message ?? 'Authentication error, please login',
+        error.message ?? 'Authentication error, please login',
         statusCode: error.response?.statusCode,
         data: error.response?.data,
       );
     } else {
       throw ApiFailure(
-        message: error.message ?? 'Something went wrong!',
+        error.message ?? 'Something went wrong!',
         statusCode: error.response?.statusCode,
         data: error.response?.data,
       );
