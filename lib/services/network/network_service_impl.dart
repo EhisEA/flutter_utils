@@ -14,7 +14,7 @@ class NetworkServiceImpl implements NetworkService {
   final _logger = const AppLogger(NetworkServiceImpl);
 
   /// Constructs a [NetworkServiceImpl] instance with a list of [interceptors].
-  NetworkServiceImpl(this.interceptors) {
+  NetworkServiceImpl({this.interceptors = const []}) {
     _dio = Dio(
       BaseOptions(
         headers: {
