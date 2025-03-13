@@ -17,11 +17,10 @@ class ShakeWidget extends StatefulWidget {
       this.animationDuration = const Duration(milliseconds: 800)});
 
   @override
-  State<ShakeWidget> createState() => _ShakeXState();
+  State<ShakeWidget> createState() => ShakeXState();
 }
 
-class _ShakeXState extends State<ShakeWidget>
-    with SingleTickerProviderStateMixin {
+class ShakeXState extends State<ShakeWidget> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   int shakeCount = 0;
   int maxShakeCount = 5;
@@ -54,17 +53,16 @@ class _ShakeXState extends State<ShakeWidget>
 
   @override
   Widget build(BuildContext context) {
-    final Animation<double> offsetAnimation =
-        Tween(begin: 0.0, end: widget.animationRange)
-            .chain(CurveTween(curve: Curves.elasticIn))
-            .animate(animationController)
-          ..addStatusListener(
-            (status) {
-              if (status == AnimationStatus.completed) {
-                animationController.reverse();
-              }
-            },
-          );
+    final Animation<double> offsetAnimation = Tween(begin: 0.0, end: widget.animationRange)
+        .chain(CurveTween(curve: Curves.elasticIn))
+        .animate(animationController)
+      ..addStatusListener(
+        (status) {
+          if (status == AnimationStatus.completed) {
+            animationController.reverse();
+          }
+        },
+      );
 
     return AnimatedBuilder(
       animation: offsetAnimation,
@@ -79,9 +77,9 @@ class _ShakeXState extends State<ShakeWidget>
 }
 
 class ShakeWidgetController {
-  late _ShakeXState _state;
+  late ShakeXState _state;
 
-  void setState(_ShakeXState state) {
+  void setState(ShakeXState state) {
     _state = state;
   }
 

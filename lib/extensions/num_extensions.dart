@@ -49,8 +49,9 @@ extension NumUtils on num {
   String toFileSize({int decimalDigits = 2}) {
     if (this < 1024) return '${toStringAsFixed(decimalDigits)} B';
     if (this < 1024 * 1024) return '${(this / 1024).toStringAsFixed(decimalDigits)} KB';
-    if (this < 1024 * 1024 * 1024)
+    if (this < 1024 * 1024 * 1024) {
       return '${(this / (1024 * 1024)).toStringAsFixed(decimalDigits)} MB';
+    }
     return '${(this / (1024 * 1024 * 1024)).toStringAsFixed(decimalDigits)} GB';
   }
 
