@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'navigation.dart';
+import 'navigation_service.dart';
 
 /// Web implementation of [NavigationService].
 class WebNavigationService extends NavigationService {

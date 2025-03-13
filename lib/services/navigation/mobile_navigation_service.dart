@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'navigation.dart';
+import 'navigation_service.dart';
 
 /// Mobile implementation of [NavigationService].
 class MobileNavigationService extends NavigationService {
