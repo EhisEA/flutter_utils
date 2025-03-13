@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../utils/utils.dart';
 
-class NetworkInterceptor extends QueuedInterceptor {
-  NetworkInterceptor();
+class LoggingInterceptor extends QueuedInterceptor {
+  LoggingInterceptor();
 
-  final _logger = const AppLogger(NetworkInterceptor);
+  final _logger = const AppLogger(LoggingInterceptor);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

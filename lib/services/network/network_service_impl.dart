@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../models/models.dart';
 import '../../utils/utils.dart';
-import 'network_interceptor.dart';
+import 'logging_interceptor.dart';
 
 part 'network_service.dart';
 
@@ -157,7 +157,7 @@ class NetworkServiceImpl implements NetworkService {
     if (refreshToken == null || refreshTokenRoute == null) return null;
 
     try {
-      final dio = Dio()..interceptors.add(NetworkInterceptor());
+      final dio = Dio()..interceptors.add(LoggingInterceptor());
       final response = await dio.post(
         refreshTokenRoute!,
         data: {'refresh_token': refreshToken},
