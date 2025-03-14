@@ -22,7 +22,7 @@ class _$ViewModelStateTearOff {
     return const _Idle();
   }
 
-  _Error error(ApiFailure failure) {
+  _Error error(Failure failure) {
     return _Error(
       failure,
     );
@@ -41,21 +41,21 @@ mixin _$ViewModelState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(ApiFailure failure) error,
+    required TResult Function(Failure failure) error,
     required TResult Function() busy,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
     required TResult orElse(),
   }) =>
@@ -136,7 +136,7 @@ class _$_Idle implements _Idle {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(ApiFailure failure) error,
+    required TResult Function(Failure failure) error,
     required TResult Function() busy,
   }) {
     return idle();
@@ -146,7 +146,7 @@ class _$_Idle implements _Idle {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
   }) {
     return idle?.call();
@@ -156,7 +156,7 @@ class _$_Idle implements _Idle {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
     required TResult orElse(),
   }) {
@@ -208,7 +208,7 @@ abstract class _Idle implements ViewModelState {
 /// @nodoc
 abstract class _$ErrorCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) then) = __$ErrorCopyWithImpl<$Res>;
-  $Res call({ApiFailure failure});
+  $Res call({Failure failure});
 }
 
 /// @nodoc
@@ -228,7 +228,7 @@ class __$ErrorCopyWithImpl<$Res> extends _$ViewModelStateCopyWithImpl<$Res>
       failure == freezed
           ? _value.failure
           : failure // ignore: cast_nullable_to_non_nullable
-              as ApiFailure,
+              as Failure,
     ));
   }
 }
@@ -239,7 +239,7 @@ class _$_Error implements _Error {
   const _$_Error(this.failure);
 
   @override
-  final ApiFailure failure;
+  final Failure failure;
 
   @override
   String toString() {
@@ -265,7 +265,7 @@ class _$_Error implements _Error {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(ApiFailure failure) error,
+    required TResult Function(Failure failure) error,
     required TResult Function() busy,
   }) {
     return error(failure);
@@ -275,7 +275,7 @@ class _$_Error implements _Error {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
   }) {
     return error?.call(failure);
@@ -285,7 +285,7 @@ class _$_Error implements _Error {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
     required TResult orElse(),
   }) {
@@ -331,9 +331,9 @@ class _$_Error implements _Error {
 }
 
 abstract class _Error implements ViewModelState {
-  const factory _Error(ApiFailure failure) = _$_Error;
+  const factory _Error(Failure failure) = _$_Error;
 
-  ApiFailure get failure;
+  Failure get failure;
   @JsonKey(ignore: true)
   _$ErrorCopyWith<_Error> get copyWith => throw _privateConstructorUsedError;
 }
@@ -375,7 +375,7 @@ class _$_Busy implements _Busy {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
-    required TResult Function(ApiFailure failure) error,
+    required TResult Function(Failure failure) error,
     required TResult Function() busy,
   }) {
     return busy();
@@ -385,7 +385,7 @@ class _$_Busy implements _Busy {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
   }) {
     return busy?.call();
@@ -395,7 +395,7 @@ class _$_Busy implements _Busy {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
-    TResult Function(ApiFailure failure)? error,
+    TResult Function(Failure failure)? error,
     TResult Function()? busy,
     required TResult orElse(),
   }) {
