@@ -17,9 +17,6 @@ class NetworkServiceImpl implements NetworkService {
   NetworkServiceImpl({this.interceptors = const []}) {
     _dio = Dio(
       BaseOptions(
-        headers: {
-          'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-        },
         contentType: Headers.jsonContentType,
         responseType: ResponseType.json,
       ),
@@ -50,7 +47,15 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic>? queryParams,
   }) async {
     try {
-      final res = await _dio.get(path, queryParameters: queryParams);
+      final res = await _dio.get(
+        path,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
       return _handleResponse(res);
     } on DioException catch (e) {
       return await _handleError(e);
@@ -64,7 +69,15 @@ class NetworkServiceImpl implements NetworkService {
     Object? data,
   }) async {
     try {
-      final res = await _dio.post(path, data: data);
+      final res = await _dio.post(
+        path,
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
       return _handleResponse(res);
     } on DioException catch (e) {
       return await _handleError(e);
@@ -86,6 +99,11 @@ class NetworkServiceImpl implements NetworkService {
       final res = await _dio.post(
         path,
         data: _generateFormData(data, file),
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -108,6 +126,11 @@ class NetworkServiceImpl implements NetworkService {
       final res = await _dio.patch(
         path,
         data: _generateFormData(data, file),
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -119,7 +142,15 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<ApiResponse> patch(String path, {Object? data}) async {
     try {
-      final res = await _dio.patch(path, data: data);
+      final res = await _dio.patch(
+        path,
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
       return _handleResponse(res);
     } on DioException catch (e) {
       return await _handleError(e);
@@ -130,7 +161,15 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<ApiResponse> put(String path, {Object? data}) async {
     try {
-      final res = await _dio.put(path, data: data);
+      final res = await _dio.put(
+        path,
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
       return _handleResponse(res);
     } on DioException catch (e) {
       return await _handleError(e);
@@ -141,7 +180,15 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<ApiResponse> delete(String path, {Object? data}) async {
     try {
-      final res = await _dio.delete(path, data: data);
+      final res = await _dio.delete(
+        path,
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
       return _handleResponse(res);
     } on DioException catch (e) {
       return await _handleError(e);
