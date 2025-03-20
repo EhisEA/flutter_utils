@@ -7,55 +7,75 @@ import 'navigation_service.dart';
 class WebNavigationService extends NavigationService {
   /// Singleton instance.
   static final WebNavigationService instance = WebNavigationService._();
-  WebNavigationService._();
+  WebNavigationService._() {
+    _initializeRouter();
+  }
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   late final GoRouter goRouter;
 
+  /// Initializes the GoRouter instance.
+  void _initializeRouter() {
+    goRouter = GoRouter(
+      navigatorKey: navigatorKey,
+      routes: [
+        // Define your routes here if necessary
+      ],
+    );
+  }
+
   @override
-  Future<void> navigateTo(String routeName,
+  Future<T?> navigateTo<T>(String routeName,
       {Map<String, String>? queryParams, Map<String, dynamic>? extra}) async {
     final uri = Uri(path: routeName, queryParameters: queryParams).toString();
-    return goRouter.go(uri, extra: extra);
-  }
-
-  @override
-  Future<void> push(String routeName,
-      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) {
-    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
-    return goRouter.push(uri, extra: extra);
-  }
-
-  @override
-  Future<void> replace(String routeName,
-      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) {
-    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
-    return goRouter.replace(uri, extra: extra);
-  }
-
-  @override
-  void navigateAndClearStack(String routeName,
-      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) {
-    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
     goRouter.go(uri, extra: extra);
+    return null;
+  }
+
+  @override
+  Future<T?> push<T>(String routeName,
+      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) async {
+    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
+    goRouter.push(uri, extra: extra);
+    return null;
+  }
+
+  @override
+  Future<T?> replace<T, TO>(String routeName,
+      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) async {
+    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
+    goRouter.replace(uri, extra: extra);
+    return null;
+  }
+
+  @override
+  Future<T?> navigateAndClearStack<T>(String routeName,
+      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) async {
+    final uri = Uri(path: routeName, queryParameters: queryParams).toString();
+    goRouter.replace(uri, extra: extra);
+    return null;
   }
 
   @override
   void popUntil(String routeName) {
-    goRouter.refresh();
-    return goRouter.pop((location) => location == routeName);
+    while (goRouter.canPop()) {
+      goRouter.pop();
+    }
+    goRouter.go(routeName);
   }
 
   @override
-  Future<void> logout(String routeName,
-      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) {
-    return replace(routeName, queryParams: queryParams, extra: extra);
+  Future<T?> logout<T>(String routeName,
+      {Map<String, String>? queryParams, Map<String, dynamic>? extra}) async {
+    return replace<T, void>(routeName, queryParams: queryParams, extra: extra);
   }
 
   @override
   void goBack<T extends Object?>([T? result]) {
-    return goRouter.pop(result);
+    if (goRouter.canPop()) {
+      goRouter.pop(result);
+    }
   }
 }
