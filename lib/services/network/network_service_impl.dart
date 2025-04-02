@@ -233,20 +233,75 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Handles errors from HTTP requests, logs them, and throws an [ApiFailure].
   Future<ApiResponse> _handleError(DioException error) async {
-    _logger.e(error.message ?? 'Something went wrong!', functionName: "_handleError");
+    final responseData = error.response?.data;
+    final statusCode = error.response?.statusCode;
 
-    if (error.response?.statusCode == 401 || error.response?.statusCode == 403) {
+    String errorMessage = 'Something went wrong!';
+
+    try {
+      // Try to extract error message from response
+      errorMessage = _extractErrorMessage(responseData) ?? errorMessage;
+    } catch (e) {
+      _logger.e('Error parsing error response: $e',
+          functionName: "_handleError");
+    }
+
+    _logger.e(errorMessage, functionName: "_handleError");
+
+    if (statusCode == 401 || statusCode == 403) {
       throw ApiFailure(
-        error.message ?? 'Authentication error, please login',
-        statusCode: error.response?.statusCode,
-        data: error.response?.data,
+        errorMessage == 'Something went wrong!'
+            ? 'Authentication error, please login'
+            : errorMessage,
+        statusCode: statusCode,
+        data: responseData,
       );
-    } else {
-      throw ApiFailure(
-        error.message ?? 'Something went wrong!',
-        statusCode: error.response?.statusCode,
-        data: error.response?.data,
-      );
+    }
+
+    throw ApiFailure(
+      errorMessage,
+      statusCode: statusCode,
+      data: responseData,
+    );
+  }
+
+  /// Extracts error message from API response data
+  String? _extractErrorMessage(dynamic responseData) {
+    if (responseData == null) return null;
+
+    try {
+      // Case 2: Check errors array/object
+      final errors = responseData['errors'];
+      if (errors != null) {
+        if (errors is List && errors.isNotEmpty) {
+          final firstError = errors.first;
+          if (firstError is Map && firstError.isNotEmpty) {
+            final firstValue = firstError.values.first;
+            if (firstValue is List && firstValue.isNotEmpty) {
+              return firstValue.first.toString();
+            }
+            return firstValue.toString();
+          }
+          return firstError.toString();
+        }
+
+        if (errors is Map && errors.isNotEmpty) {
+          final firstError = errors.values.first;
+          if (firstError is List && firstError.isNotEmpty) {
+            return firstError.first.toString();
+          }
+          return firstError.toString();
+        }
+      }
+      // Case 1: Check for direct message
+      if (responseData['message'] is String) {
+        return responseData['message'];
+      }
+
+      // Case 3: Fallback to string representation
+      return 'Something went wrong!';
+    } catch (e) {
+      return null;
     }
   }
 
@@ -263,7 +318,9 @@ class NetworkServiceImpl implements NetworkService {
     if (file != null) {
       for (var value in file.entries) {
         if (value.value is List) {
-          map[value.key] = (value.value as List).map((e) => MultipartFile.fromFileSync(e)).toList();
+          map[value.key] = (value.value as List)
+              .map((e) => MultipartFile.fromFileSync(e))
+              .toList();
         } else {
           map[value.key] = MultipartFile.fromFileSync(value.value);
         }
