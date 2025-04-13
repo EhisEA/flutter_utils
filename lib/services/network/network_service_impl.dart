@@ -42,7 +42,7 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a GET request to the specified [path] with optional [queryParams].
   @override
-  Future<ApiResponse> get(
+  Future<HeaderApiResponse> get(
     String path, {
     Map<String, dynamic>? queryParams,
   }) async {
@@ -64,7 +64,7 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a POST request to the specified [path] with optional [data].
   @override
-  Future<ApiResponse> post(
+  Future<HeaderApiResponse> post(
     String path, {
     Object? data,
   }) async {
@@ -90,7 +90,7 @@ class NetworkServiceImpl implements NetworkService {
   /// - [file]: A map of files where the key represents the field name and
   ///   the value is the file content.
   @override
-  Future<ApiResponse> postFormData(
+  Future<HeaderApiResponse> postFormData(
     String path, {
     Object? data,
     Map<String, dynamic>? file,
@@ -117,7 +117,34 @@ class NetworkServiceImpl implements NetworkService {
   /// - [file]: A map of files where the key represents the field name and
   ///   the value is the file content.
   @override
-  Future<ApiResponse> patchFormData(
+  Future<HeaderApiResponse> patchFormData(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? file,
+  }) async {
+    try {
+      final res = await _dio.patch(
+        path,
+        data: _generateFormData(data, file),
+        options: Options(
+          headers: {
+            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+          },
+        ),
+      );
+      return _handleResponse(res);
+    } on DioException catch (e) {
+      return await _handleError(e);
+    }
+  }
+
+  /// Sends a PATCH request with form data, allowing file uploads.
+  ///
+  /// - [data]: Additional form fields to be sent.
+  /// - [file]: A map of files where the key represents the field name and
+  ///   the value is the file content.
+  @override
+  Future<HeaderApiResponse> putFormData(
     String path, {
     Object? data,
     Map<String, dynamic>? file,
@@ -140,7 +167,7 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a PATCH request to the specified [path] with optional [data].
   @override
-  Future<ApiResponse> patch(String path, {Object? data}) async {
+  Future<HeaderApiResponse> patch(String path, {Object? data}) async {
     try {
       final res = await _dio.patch(
         path,
@@ -159,7 +186,7 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a PUT request to the specified [path] with optional [data].
   @override
-  Future<ApiResponse> put(String path, {Object? data}) async {
+  Future<HeaderApiResponse> put(String path, {Object? data}) async {
     try {
       final res = await _dio.put(
         path,
@@ -178,7 +205,7 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a DELETE request to the specified [path] with optional [data].
   @override
-  Future<ApiResponse> delete(String path, {Object? data}) async {
+  Future<HeaderApiResponse> delete(String path, {Object? data}) async {
     try {
       final res = await _dio.delete(
         path,
@@ -223,7 +250,7 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   /// Handles successful HTTP responses and wraps them in an [ApiResponse] object.
-  ApiResponse _handleResponse(Response res) {
+  HeaderApiResponse _handleResponse(Response res) {
     return HeaderApiResponse(
       headers: res.headers.map,
       statusCode: res.statusCode,
@@ -232,7 +259,7 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   /// Handles errors from HTTP requests, logs them, and throws an [ApiFailure].
-  Future<ApiResponse> _handleError(DioException error) async {
+  Future<HeaderApiResponse> _handleError(DioException error) async {
     final responseData = error.response?.data;
     final statusCode = error.response?.statusCode;
 

@@ -31,7 +31,8 @@ class LoggingInterceptor extends QueuedInterceptor {
   void _logRequest(RequestOptions options) {
     if (!kDebugMode) return;
 
-    _logger.custom('<== REQUEST ==>', color: LoggerColor.black, functionName: "onRequest");
+    _logger.custom('<== REQUEST ==>',
+        color: LoggerColor.black, functionName: "onRequest");
     _logger.custom(
       'REQUEST [${options.method}] ==> ${options.uri}',
       color: LoggerColor.black,
@@ -60,7 +61,8 @@ class LoggingInterceptor extends QueuedInterceptor {
   void _logResponse(Response response) {
     if (!kDebugMode) return;
 
-    _logger.custom('==> <== RESPONSE ==>', color: LoggerColor.black, functionName: "onResponse");
+    _logger.custom('==> <== RESPONSE ==>',
+        color: LoggerColor.black, functionName: "onResponse");
     _logger.custom(
       'RESPONSE [${response.statusCode}] => PATH: ${response.requestOptions.uri}',
       color: LoggerColor.black,
@@ -97,11 +99,11 @@ class LoggingInterceptor extends QueuedInterceptor {
       case DioExceptionType.badCertificate:
         return "Invalid SSL certificate.";
       case DioExceptionType.badResponse:
-        return dioError.response?.data?['message'] ?? "Unexpected server response.";
+        return dioError.response?.data?['message'] ??
+            "Unexpected server response.";
       case DioExceptionType.connectionError:
         return "No internet connection or server is unreachable.";
       case DioExceptionType.unknown:
-      default:
         return "An unknown error occurred.";
     }
   }

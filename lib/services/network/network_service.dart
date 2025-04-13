@@ -12,13 +12,13 @@ abstract class NetworkService {
   /// Sends a GET request to the specified [path].
   ///
   /// - [queryParams]: Optional query parameters for the request.
-  Future<ApiResponse> get(
+  Future<HeaderApiResponse> get(
     String path, {
     Map<String, dynamic>? queryParams,
   });
 
   /// Sends a POST request to the specified [path] with optional [data].
-  Future<ApiResponse> post(
+  Future<HeaderApiResponse> post(
     String path, {
     Object? data,
   });
@@ -28,7 +28,7 @@ abstract class NetworkService {
   /// - [data]: Additional form fields to be sent.
   /// - [file]: A map of files where the key represents the field name and
   ///   the value is the file content.
-  Future<ApiResponse> postFormData(
+  Future<HeaderApiResponse> postFormData(
     String path, {
     Object? data,
     Map<String, dynamic>? file,
@@ -39,20 +39,31 @@ abstract class NetworkService {
   /// - [data]: Additional form fields to be sent.
   /// - [file]: A map of files where the key represents the field name and
   ///   the value is the file content.
-  Future<ApiResponse> patchFormData(
+  Future<HeaderApiResponse> patchFormData(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? file,
+  });
+
+  /// Sends a PUT request with form data, allowing file uploads.
+  ///
+  /// - [data]: Additional form fields to be sent.
+  /// - [file]: A map of files where the key represents the field name and
+  ///   the value is the file content.
+  Future<HeaderApiResponse> putFormData(
     String path, {
     Object? data,
     Map<String, dynamic>? file,
   });
 
   /// Sends a PATCH request to the specified [path] with optional [data].
-  Future<ApiResponse> patch(String path, {Object? data});
+  Future<HeaderApiResponse> patch(String path, {Object? data});
 
   /// Sends a PUT request to the specified [path] with optional [data].
-  Future<ApiResponse> put(String path, {Object? data});
+  Future<HeaderApiResponse> put(String path, {Object? data});
 
   /// Sends a DELETE request to the specified [path] with optional [data].
-  Future<ApiResponse> delete(String path, {Object? data});
+  Future<HeaderApiResponse> delete(String path, {Object? data});
 
   /// Attempts to refresh the access token when authentication fails.
   ///
