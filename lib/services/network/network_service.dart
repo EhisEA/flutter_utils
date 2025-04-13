@@ -14,12 +14,14 @@ abstract class NetworkService {
   /// - [queryParams]: Optional query parameters for the request.
   Future<HeaderApiResponse> get(
     String path, {
+    Map<String, dynamic>? headers,
     Map<String, dynamic>? queryParams,
   });
 
   /// Sends a POST request to the specified [path] with optional [data].
   Future<HeaderApiResponse> post(
     String path, {
+    Map<String, dynamic>? headers,
     Object? data,
   });
 
@@ -31,6 +33,7 @@ abstract class NetworkService {
   Future<HeaderApiResponse> postFormData(
     String path, {
     Object? data,
+    Map<String, dynamic>? headers,
     Map<String, dynamic>? file,
   });
 
@@ -42,6 +45,7 @@ abstract class NetworkService {
   Future<HeaderApiResponse> patchFormData(
     String path, {
     Object? data,
+    Map<String, dynamic>? headers,
     Map<String, dynamic>? file,
   });
 
@@ -53,17 +57,30 @@ abstract class NetworkService {
   Future<HeaderApiResponse> putFormData(
     String path, {
     Object? data,
+    Map<String, dynamic>? headers,
     Map<String, dynamic>? file,
   });
 
   /// Sends a PATCH request to the specified [path] with optional [data].
-  Future<HeaderApiResponse> patch(String path, {Object? data});
+  Future<HeaderApiResponse> patch(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  });
 
   /// Sends a PUT request to the specified [path] with optional [data].
-  Future<HeaderApiResponse> put(String path, {Object? data});
+  Future<HeaderApiResponse> put(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  });
 
   /// Sends a DELETE request to the specified [path] with optional [data].
-  Future<HeaderApiResponse> delete(String path, {Object? data});
+  Future<HeaderApiResponse> delete(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  });
 
   /// Attempts to refresh the access token when authentication fails.
   ///

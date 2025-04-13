@@ -44,6 +44,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> get(
     String path, {
+    Map<String, dynamic>? headers,
     Map<String, dynamic>? queryParams,
   }) async {
     try {
@@ -53,6 +54,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -66,6 +68,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> post(
     String path, {
+    Map<String, dynamic>? headers,
     Object? data,
   }) async {
     try {
@@ -75,6 +78,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -92,6 +96,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> postFormData(
     String path, {
+    Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
   }) async {
@@ -102,6 +107,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -119,6 +125,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> patchFormData(
     String path, {
+    Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
   }) async {
@@ -129,6 +136,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -146,6 +154,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> putFormData(
     String path, {
+    Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
   }) async {
@@ -156,6 +165,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -167,7 +177,11 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a PATCH request to the specified [path] with optional [data].
   @override
-  Future<HeaderApiResponse> patch(String path, {Object? data}) async {
+  Future<HeaderApiResponse> patch(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  }) async {
     try {
       final res = await _dio.patch(
         path,
@@ -175,6 +189,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -186,7 +201,11 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a PUT request to the specified [path] with optional [data].
   @override
-  Future<HeaderApiResponse> put(String path, {Object? data}) async {
+  Future<HeaderApiResponse> put(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  }) async {
     try {
       final res = await _dio.put(
         path,
@@ -194,6 +213,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
@@ -205,7 +225,11 @@ class NetworkServiceImpl implements NetworkService {
 
   /// Sends a DELETE request to the specified [path] with optional [data].
   @override
-  Future<HeaderApiResponse> delete(String path, {Object? data}) async {
+  Future<HeaderApiResponse> delete(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? headers,
+  }) async {
     try {
       final res = await _dio.delete(
         path,
@@ -213,6 +237,7 @@ class NetworkServiceImpl implements NetworkService {
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
+            ...headers ?? {},
           },
         ),
       );
