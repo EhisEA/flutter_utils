@@ -6,10 +6,13 @@ class ApiResponse<T> {
   /// Data returned from the API
   final T? data;
 
+  final bool hasNextPage;
+
   /// Constructor for API response
   const ApiResponse({
     this.statusCode,
     this.data,
+    this.hasNextPage = false,
   });
 
   /// Factory constructor to create an `ApiResponse<T>` from JSON

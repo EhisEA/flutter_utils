@@ -66,11 +66,12 @@ class _CachedNetworkSvgImageState extends State<CachedNetworkSvgImage> {
             alignment: widget.alignment,
             allowDrawingOutsideViewBox: widget.allowDrawingOutsideViewBox,
             clipBehavior: widget.clipBehavior,
-            colorFilter: ColorFilter.mode(
-              widget.color!,
-              BlendMode.srcIn,
-            ),
-            colorBlendMode: widget.colorBlendMode,
+            colorFilter: widget.color != null
+                ? ColorFilter.mode(
+                    widget.color!,
+                    widget.colorBlendMode ?? BlendMode.srcIn,
+                  )
+                : null,
             excludeFromSemantics: widget.excludeFromSemantics,
             fit: widget.fit,
             height: widget.height,
