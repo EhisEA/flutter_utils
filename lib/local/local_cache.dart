@@ -25,6 +25,9 @@ abstract class LocalCache {
   ///Retrieves a cached value stored with `key`.
   Object? getFromLocalCache(String key);
 
+  ///Retrieves a cached value stored with `key`. of type Map.
+  Map? getMapData(String key);
+
   ///Removes cached value stored with `key` from cache.
   Future<void> removeFromLocalCache(String key);
 

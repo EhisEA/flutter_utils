@@ -106,6 +106,17 @@ class LocalCacheImpl implements LocalCache {
   }
 
   @override
+  Map? getMapData(String key) {
+    try {
+      final data = getFromLocalCache(key) as String?;
+      return data != null ? jsonDecode(data) as Map : null;
+    } catch (e) {
+      _log.e('Failed to get user data: $e');
+      return null;
+    }
+  }
+
+  @override
   Future<void> saveUserData(Map<String, dynamic> json) async {
     await saveToLocalCache(key: _userKey, value: json);
   }

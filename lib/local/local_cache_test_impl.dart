@@ -57,4 +57,11 @@ class LocalCacheTestImpl implements LocalCache {
   Future<void> saveUserData(Map<String, dynamic> json) async {
     _cache[_userDataKey] = jsonEncode(json);
   }
+
+  @override
+  Map? getMapData(String key) {
+    final data = _cache[key];
+    if (data == null) return null;
+    return json.decode(data.toString()) as Map;
+  }
 }
