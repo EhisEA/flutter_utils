@@ -326,6 +326,10 @@ class NetworkServiceImpl implements NetworkService {
       );
     }
 
+    if (error.type == DioExceptionType.cancel) {
+      throw ApiCancelFailure("Api request cancelled");
+    }
+
     throw ApiFailure(
       errorMessage,
       statusCode: statusCode,
