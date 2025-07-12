@@ -348,7 +348,7 @@ class NetworkServiceImpl implements NetworkService {
         if (errors is List && errors.isNotEmpty) {
           final firstError = errors.first;
           if (firstError is Map && firstError.isNotEmpty) {
-            final firstValue = firstError.values.first;
+            final firstValue = firstError['message'] ?? firstError.values.first;
             if (firstValue is List && firstValue.isNotEmpty) {
               return firstValue.first.toString();
             }
