@@ -78,6 +78,10 @@ class LoggingInterceptor extends QueuedInterceptor {
 
     _logger.e('<== ERROR ==>', functionName: "onError");
     _logger.e(
+      'ERROR  => : ${err.response}',
+      functionName: "Full Error",
+    );
+    _logger.e(
       'ERROR [${err.response?.statusCode}] => PATH: ${err.requestOptions.uri}',
       functionName: "onError",
     );
