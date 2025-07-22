@@ -2,20 +2,28 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// Extension on [BuildContext] that provides convenient access to device information,
+/// screen dimensions, platform detection, and responsive design utilities.
 extension ContextExtension on BuildContext {
-  /// Returns the padding (e.g., system UI obstructions like notches or status bars).
+  /// Returns the system UI padding (e.g., status bar, notch, safe areas).
+  ///
+  /// This includes padding for system UI obstructions like notches or status bars.
   EdgeInsets get padding => MediaQuery.of(this).padding;
 
-  /// Returns the device width.
+  /// Returns the total device screen width in logical pixels.
   double get width => MediaQuery.of(this).size.width;
 
-  /// Returns the device height.
+  /// Returns the total device screen height in logical pixels.
   double get height => MediaQuery.of(this).size.height;
 
-  /// Returns the device width minus horizontal padding.
+  /// Returns the available width minus horizontal system UI padding.
+  ///
+  /// Useful for calculating content area width that accounts for safe areas.
   double get widthWithoutPadding => width - padding.horizontal;
 
-  /// Returns the device height minus vertical padding.
+  /// Returns the available height minus vertical system UI padding.
+  ///
+  /// Useful for calculating content area height that accounts for safe areas.
   double get heightWithoutPadding => height - padding.vertical;
 
   /// Returns the bottom padding of the keyboard.
@@ -66,7 +74,8 @@ extension ContextExtension on BuildContext {
   double get webRightSideWidth => 350;
 
   /// Checks if the app is running on a mobile device (Android or iOS).
-  bool get isMobileDevice => kIsWeb ? false : Platform.isAndroid || Platform.isIOS;
+  bool get isMobileDevice =>
+      kIsWeb ? false : Platform.isAndroid || Platform.isIOS;
 
   /// Returns the height for empty state images or SVGs.
   double get emptyStateHeight => height / 4;

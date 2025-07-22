@@ -11,10 +11,18 @@ export 'utils/utils.dart';
 export 'widgets/widgets.dart';
 export 'router/router.dart';
 
-class MHIFlutterLibrary {
-  MHIFlutterLibrary();
+/// Main class for initializing the Flutter Utils package.
+///
+/// This class provides a centralized way to initialize all utilities
+/// and services provided by the flutter_utils package.
+class FlutterUtils {
+  FlutterUtils();
 
-  void initialise() {
-    log('[MHI Flutter Library]: INITIALISED', level: 2000, name: 'Test');
+  /// Initializes the Flutter Utils package.
+  ///
+  /// Call this method in your main() function before running your app
+  /// to ensure all utilities are properly initialized.
+  void initialize() {
+    log('[Flutter Utils]: INITIALIZED', level: 2000, name: 'FlutterUtils');
   }
 }
