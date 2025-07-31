@@ -30,6 +30,7 @@ abstract class MediaService {
   Future<FileResult?> cropImage({
     required FileResult file,
     int? size,
+    ({double ratioX, double ratioY})? aspectRatio,
   });
 
   Future<FileResult> resizeImage({
