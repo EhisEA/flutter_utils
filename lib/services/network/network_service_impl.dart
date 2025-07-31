@@ -44,6 +44,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> get(
     String path, {
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? queryParams,
   }) async {
@@ -51,6 +52,7 @@ class NetworkServiceImpl implements NetworkService {
       final res = await _dio.get(
         path,
         queryParameters: queryParams,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
@@ -68,6 +70,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> post(
     String path, {
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Object? data,
   }) async {
@@ -75,6 +78,7 @@ class NetworkServiceImpl implements NetworkService {
       final res = await _dio.post(
         path,
         data: data,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
@@ -96,6 +100,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> postFormData(
     String path, {
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
@@ -103,6 +108,7 @@ class NetworkServiceImpl implements NetworkService {
     try {
       final res = await _dio.post(
         path,
+        cancelToken: cancelToken,
         data: _generateFormData(data, file),
         options: Options(
           headers: {
@@ -125,6 +131,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> patchFormData(
     String path, {
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
@@ -132,6 +139,7 @@ class NetworkServiceImpl implements NetworkService {
     try {
       final res = await _dio.patch(
         path,
+        cancelToken: cancelToken,
         data: _generateFormData(data, file),
         options: Options(
           headers: {
@@ -154,6 +162,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<HeaderApiResponse> putFormData(
     String path, {
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Object? data,
     Map<String, dynamic>? file,
@@ -161,6 +170,7 @@ class NetworkServiceImpl implements NetworkService {
     try {
       final res = await _dio.patch(
         path,
+        cancelToken: cancelToken,
         data: _generateFormData(data, file),
         options: Options(
           headers: {
@@ -180,12 +190,14 @@ class NetworkServiceImpl implements NetworkService {
   Future<HeaderApiResponse> patch(
     String path, {
     Object? data,
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
   }) async {
     try {
       final res = await _dio.patch(
         path,
         data: data,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
@@ -204,12 +216,14 @@ class NetworkServiceImpl implements NetworkService {
   Future<HeaderApiResponse> put(
     String path, {
     Object? data,
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
   }) async {
     try {
       final res = await _dio.put(
         path,
         data: data,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
@@ -228,12 +242,14 @@ class NetworkServiceImpl implements NetworkService {
   Future<HeaderApiResponse> delete(
     String path, {
     Object? data,
+    CancelToken? cancelToken,
     Map<String, dynamic>? headers,
   }) async {
     try {
       final res = await _dio.delete(
         path,
         data: data,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Authorization': accessToken == null ? null : 'Bearer $accessToken',
@@ -310,6 +326,10 @@ class NetworkServiceImpl implements NetworkService {
       );
     }
 
+    if (error.type == DioExceptionType.cancel) {
+      throw ApiCancelFailure("Api request cancelled");
+    }
+
     throw ApiFailure(
       errorMessage,
       statusCode: statusCode,
@@ -328,7 +348,7 @@ class NetworkServiceImpl implements NetworkService {
         if (errors is List && errors.isNotEmpty) {
           final firstError = errors.first;
           if (firstError is Map && firstError.isNotEmpty) {
-            final firstValue = firstError.values.first;
+            final firstValue = firstError['message'] ?? firstError.values.first;
             if (firstValue is List && firstValue.isNotEmpty) {
               return firstValue.first.toString();
             }

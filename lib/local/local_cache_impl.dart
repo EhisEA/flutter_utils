@@ -7,11 +7,13 @@ class LocalCacheImpl implements LocalCache {
   static const _tokenKey = 'userToken';
   static const _userDataKey = 'userData';
   late final _log = const AppLogger(LocalCacheImpl);
-
+  final String? userDataStorageKey;
   late SharedPreferences _sharedPreferences;
+  String get _userKey => userDataStorageKey ?? _userDataKey;
 
   LocalCacheImpl({
     required SharedPreferences sharedPreferences,
+    this.userDataStorageKey,
   }) {
     _sharedPreferences = sharedPreferences;
   }
@@ -55,8 +57,10 @@ class LocalCacheImpl implements LocalCache {
   }
 
   @override
-  Future<void> saveToLocalCache({required String key, required dynamic value}) async {
-    _log.i('Saving data: key="$key", value="$value", type="${value.runtimeType}"');
+  Future<void> saveToLocalCache(
+      {required String key, required dynamic value}) async {
+    _log.i(
+        'Saving data: key="$key", value="$value", type="${value.runtimeType}"');
 
     try {
       if (value is String) {
@@ -93,7 +97,7 @@ class LocalCacheImpl implements LocalCache {
   @override
   Map<String, dynamic>? getUserData() {
     try {
-      final data = getFromLocalCache(_userDataKey) as String?;
+      final data = getFromLocalCache(_userKey) as String?;
       return data != null ? jsonDecode(data) as Map<String, dynamic> : null;
     } catch (e) {
       _log.e('Failed to get user data: $e');
@@ -102,7 +106,18 @@ class LocalCacheImpl implements LocalCache {
   }
 
   @override
+  Map? getMapData(String key) {
+    try {
+      final data = getFromLocalCache(key) as String?;
+      return data != null ? jsonDecode(data) as Map : null;
+    } catch (e) {
+      _log.e('Failed to get user data: $e');
+      return null;
+    }
+  }
+
+  @override
   Future<void> saveUserData(Map<String, dynamic> json) async {
-    await saveToLocalCache(key: _userDataKey, value: json);
+    await saveToLocalCache(key: _userKey, value: json);
   }
 }
