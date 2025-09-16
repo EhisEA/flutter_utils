@@ -46,7 +46,8 @@ class MediaServiceImpl implements MediaService {
       if (image == null) throw Exception("Invalid image file");
 
       final compressedBytes = img.encodeJpg(image, quality: quality);
-      final compressedFile = await File(file.path).writeAsBytes(compressedBytes);
+      final compressedFile =
+          await File(file.path).writeAsBytes(compressedBytes);
 
       return file.copyWith(path: compressedFile.path);
     } catch (e) {
@@ -67,11 +68,17 @@ class MediaServiceImpl implements MediaService {
     required FileResult file,
     BuildContext? context,
     int? size,
+    ({double ratioX, double ratioY})? aspectRatio,
   }) async {
     try {
       final res = await _cropper.cropImage(
         sourcePath: file.path,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatio: aspectRatio != null
+            ? CropAspectRatio(
+                ratioX: aspectRatio.ratioX,
+                ratioY: aspectRatio.ratioY,
+              )
+            : null,
         compressQuality: 100,
         maxWidth: size,
         maxHeight: size,
@@ -141,7 +148,9 @@ class MediaServiceImpl implements MediaService {
         allowedExtensions: allowedExtensions,
         type: allowedExtensions == null ? FileType.any : FileType.custom,
       );
-      return res == null ? null : _createFileResult(File(res.files.single.path!));
+      return res == null
+          ? null
+          : _createFileResult(File(res.files.single.path!));
     } catch (e) {
       debugPrint("Error picking file: $e");
       return null;
@@ -278,7 +287,8 @@ class MediaServiceImpl implements MediaService {
         path = (await getApplicationDocumentsDirectory()).path;
       }
 
-      final file = File('$path/$name${DateTime.now().microsecondsSinceEpoch}.$extension');
+      final file = File(
+          '$path/$name${DateTime.now().microsecondsSinceEpoch}.$extension');
       await file.writeAsBytes(bytes);
 
       return _createFileResult(file);
