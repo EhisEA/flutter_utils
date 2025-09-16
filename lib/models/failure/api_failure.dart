@@ -1,10 +1,11 @@
 import 'package:flutter_utils/models/failure/failure.dart';
 
 class ApiFailure extends Failure {
-  ApiFailure(super.message, {this.data, this.statusCode});
+  ApiFailure(super.message, {this.data, this.statusCode, this.event});
 
   final int? statusCode;
   final dynamic data;
+  final dynamic event;
 
   factory ApiFailure.fromHttpErrorMap(Map<String, dynamic> error) {
     // checking the error format
@@ -28,7 +29,7 @@ class ApiFailure extends Failure {
       errorMessage = "Error";
     }
 
-    return ApiFailure(errorMessage);
+    return ApiFailure(errorMessage, event: error['event']);
   }
 
   @override
@@ -37,7 +38,9 @@ class ApiFailure extends Failure {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is ApiFailure && other.message == message && other.data == data;
+    return other is ApiFailure &&
+        other.message == message &&
+        other.data == data;
   }
 
   @override

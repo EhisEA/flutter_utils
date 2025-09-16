@@ -302,6 +302,7 @@ class NetworkServiceImpl implements NetworkService {
   /// Handles errors from HTTP requests, logs them, and throws an [ApiFailure].
   Future<HeaderApiResponse> _handleError(DioException error) async {
     final responseData = error.response?.data;
+    final responseEvent = error.response?.data?['event'];
     final statusCode = error.response?.statusCode;
 
     String errorMessage = 'Something went wrong!';
@@ -322,6 +323,7 @@ class NetworkServiceImpl implements NetworkService {
             ? 'Authentication error, please login'
             : errorMessage,
         statusCode: statusCode,
+        event: responseEvent,
         data: responseData,
       );
     }
@@ -333,6 +335,7 @@ class NetworkServiceImpl implements NetworkService {
     throw ApiFailure(
       errorMessage,
       statusCode: statusCode,
+      event: responseEvent,
       data: responseData,
     );
   }
