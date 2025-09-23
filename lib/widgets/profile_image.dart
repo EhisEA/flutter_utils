@@ -10,11 +10,13 @@ class ProfileImage extends StatelessWidget {
     this.height = 50,
     this.autoGenerateName,
     this.borderRadius = 50,
+    this.randomColor = false,
   });
   const ProfileImage.singleDimension({
     super.key,
     this.autoGenerateName,
     this.imageUrl,
+    this.randomColor = false,
     double dimension = 50,
   })  : width = dimension,
         height = dimension,
@@ -24,6 +26,7 @@ class ProfileImage extends StatelessWidget {
   final double width;
   final double height;
   final double borderRadius;
+  final bool randomColor;
 
   /// Generate imagewith user name
   final String? autoGenerateName;
@@ -43,8 +46,9 @@ class ProfileImage extends StatelessWidget {
           ? autoGenerateName != null
               ? CachedNetworkImage(
                   fit: BoxFit.cover,
-                  imageUrl:
-                      "https://ui-avatars.com/api/?name=$autoGenerateName&background=0D8ABC&color=fff",
+                  imageUrl: randomColor
+                      ? "https://ui-avatars.com/api/?name=$autoGenerateName&background=random&bold=true"
+                      : "https://ui-avatars.com/api/?name=$autoGenerateName&background=0D8ABC&color=fff",
                   placeholder: (context, url) => placeHolder(),
                 )
               : Center(
