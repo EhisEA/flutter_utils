@@ -40,7 +40,7 @@ class ProfileImage extends StatelessWidget {
         // border: Border.all(width: 4, color: Colors.white),
       ),
       child: !(imageUrl?.startsWith("http") ?? false)
-          ? (imageUrl?.isNotEmpty ?? false) && autoGenerateName != null
+          ? autoGenerateName != null
               ? CachedNetworkImage(
                   fit: BoxFit.cover,
                   imageUrl:
@@ -55,12 +55,12 @@ class ProfileImage extends StatelessWidget {
                         size: height / 2,
                         color: Colors.white,
                       ),
-                      Text(
-                        "$imageUrl",
-                        style: const TextStyle(
-                          color: Colors.red,
-                        ),
-                      )
+                      // Text(
+                      //   "$imageUrl",
+                      //   style: const TextStyle(
+                      //     color: Colors.red,
+                      //   ),
+                      // )
                     ],
                   ),
                 )
