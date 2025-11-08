@@ -1,13 +1,16 @@
 import 'package:flutter_utils/models/failure/failure.dart';
 
 class ApiFailure extends Failure {
-  ApiFailure(super.message, {this.data, this.statusCode, this.event});
+  ApiFailure(super.message,
+      {this.data, this.headers, this.statusCode, this.event});
 
   final int? statusCode;
   final dynamic data;
+  final dynamic headers;
   final dynamic event;
 
-  factory ApiFailure.fromHttpErrorMap(Map<String, dynamic> error) {
+  factory ApiFailure.fromHttpErrorMap(
+      Map<String, dynamic> error, dynamic headers) {
     // checking the error format
     // so i can apporpriately get the error message
     // Note: input errors are different from normal error
@@ -29,7 +32,7 @@ class ApiFailure extends Failure {
       errorMessage = "Error";
     }
 
-    return ApiFailure(errorMessage, event: error['event']);
+    return ApiFailure(errorMessage, event: error['event'], headers: headers);
   }
 
   @override
@@ -40,9 +43,10 @@ class ApiFailure extends Failure {
     if (identical(this, other)) return true;
     return other is ApiFailure &&
         other.message == message &&
-        other.data == data;
+        other.data == data &&
+        other.headers == headers;
   }
 
   @override
-  int get hashCode => Object.hash(message, data);
+  int get hashCode => Object.hash(message, data, headers);
 }
