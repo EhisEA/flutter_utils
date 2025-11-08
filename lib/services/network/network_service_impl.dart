@@ -316,9 +316,13 @@ class NetworkServiceImpl implements NetworkService {
     }
 
     _logger.e(errorMessage, functionName: "_handleError");
+    _logger.e(error.response?.headers.map, functionName: "error headers");
+    _logger.e(error.response?.headers, functionName: "error headers 2");
+    _logger.e(error.response, functionName: "error response");
 
     if (statusCode == 401 || statusCode == 403) {
       throw ApiFailure(
+        headers: error.response?.headers.map,
         errorMessage == 'Something went wrong!'
             ? 'Authentication error, please login'
             : errorMessage,
@@ -333,6 +337,7 @@ class NetworkServiceImpl implements NetworkService {
     }
 
     throw ApiFailure(
+      headers: error.response?.headers.map,
       errorMessage,
       statusCode: statusCode,
       event: responseEvent,
