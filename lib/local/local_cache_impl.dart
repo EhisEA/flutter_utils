@@ -39,7 +39,8 @@ class LocalCacheImpl implements LocalCache {
 
   @override
   String? getToken() {
-    return getFromLocalCache(_tokenKey) as String?;
+    final token = getFromLocalCache(_tokenKey);
+    return token is String ? token : null;
   }
 
   @override
@@ -59,8 +60,17 @@ class LocalCacheImpl implements LocalCache {
   @override
   Future<void> saveToLocalCache(
       {required String key, required dynamic value}) async {
-    _log.i(
-        'Saving data: key="$key", value="$value", type="${value.runtimeType}"');
+    // Don't log sensitive data like tokens
+    final isSensitiveKey = key.toLowerCase().contains('token') ||
+        key.toLowerCase().contains('password') ||
+        key.toLowerCase().contains('secret');
+
+    if (isSensitiveKey) {
+      _log.i('Saving data: key="$key", type="${value.runtimeType}"');
+    } else {
+      _log.i(
+          'Saving data: key="$key", value="$value", type="${value.runtimeType}"');
+    }
 
     try {
       if (value is String) {
@@ -97,8 +107,12 @@ class LocalCacheImpl implements LocalCache {
   @override
   Map<String, dynamic>? getUserData() {
     try {
-      final data = getFromLocalCache(_userKey) as String?;
-      return data != null ? jsonDecode(data) as Map<String, dynamic> : null;
+      final data = getFromLocalCache(_userKey);
+      if (data is String) {
+        final decoded = jsonDecode(data);
+        return decoded is Map<String, dynamic> ? decoded : null;
+      }
+      return null;
     } catch (e) {
       _log.e('Failed to get user data: $e');
       return null;
@@ -108,10 +122,14 @@ class LocalCacheImpl implements LocalCache {
   @override
   Map? getMapData(String key) {
     try {
-      final data = getFromLocalCache(key) as String?;
-      return data != null ? jsonDecode(data) as Map : null;
+      final data = getFromLocalCache(key);
+      if (data is String) {
+        final decoded = jsonDecode(data);
+        return decoded is Map ? decoded : null;
+      }
+      return null;
     } catch (e) {
-      _log.e('Failed to get user data: $e');
+      _log.e('Failed to get map data for key "$key": $e');
       return null;
     }
   }

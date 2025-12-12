@@ -21,13 +21,45 @@ class AsyncState<T> {
   const AsyncState.loading() : this._(isLoading: true, hasError: false);
 
   /// State with successfully loaded data.
-  const AsyncState.data(T data) : this._(data: data, isLoading: false, hasError: false);
+  const AsyncState.data(T data)
+      : this._(data: data, isLoading: false, hasError: false);
 
   /// State indicating an error occurred.
-  const AsyncState.error(String error) : this._(isLoading: false, hasError: true, error: error);
+  const AsyncState.error(String error)
+      : this._(isLoading: false, hasError: true, error: error);
 
   /// Returns `true` if valid data is available.
   bool get hasData => data != null;
+
+  /// Pattern matching method for handling different states.
+  ///
+  /// Provides a type-safe way to handle all possible states of [AsyncState].
+  ///
+  /// Example:
+  /// ```dart
+  /// state.when(
+  ///   initial: () => Text('No data'),
+  ///   loading: () => CircularProgressIndicator(),
+  ///   data: (data) => Text('Data: $data'),
+  ///   error: (error) => Text('Error: $error'),
+  /// )
+  /// ```
+  R when<R>({
+    required R Function() initial,
+    required R Function() loading,
+    required R Function(T data) data,
+    required R Function(String error) error,
+  }) {
+    if (isLoading) {
+      return loading();
+    } else if (hasError && this.error != null) {
+      return error(this.error!);
+    } else if (hasData && this.data != null) {
+      return data(this.data as T);
+    } else {
+      return initial();
+    }
+  }
 
   /// Creates a new state with updated properties.
   AsyncState<T> copyWith({

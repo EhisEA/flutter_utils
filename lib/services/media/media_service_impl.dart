@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../models/models.dart';
+import '../../utils/utils.dart';
 import 'media_service.dart';
 
 /// Implementation of [MediaService] for handling file, image, and media operations.
@@ -18,6 +19,7 @@ class MediaServiceImpl implements MediaService {
   final ImageCropper _cropper = ImageCropper();
   final FilePicker _filePicker = FilePicker.platform;
   final ImagePicker _picker = ImagePicker();
+  final _logger = const AppLogger(MediaServiceImpl);
 
   /// Creates a [FileResult] from a given [File].
   FileResult _createFileResult(File file) {
@@ -51,7 +53,7 @@ class MediaServiceImpl implements MediaService {
 
       return file.copyWith(path: compressedFile.path);
     } catch (e) {
-      debugPrint("Error compressing image: $e");
+      _logger.e('Error compressing image: $e');
       rethrow;
     }
   }
@@ -101,7 +103,7 @@ class MediaServiceImpl implements MediaService {
       );
       return res == null ? null : file.copyWith(path: res.path);
     } catch (e) {
-      debugPrint("Error cropping image: $e");
+      _logger.e('Error cropping image: $e');
       return null;
     }
   }
@@ -128,7 +130,7 @@ class MediaServiceImpl implements MediaService {
 
       return _createFileResult(file);
     } catch (e) {
-      debugPrint("Error downloading file: $e");
+      _logger.e('Error downloading file: $e');
       return null;
     }
   }
@@ -152,7 +154,7 @@ class MediaServiceImpl implements MediaService {
           ? null
           : _createFileResult(File(res.files.single.path!));
     } catch (e) {
-      debugPrint("Error picking file: $e");
+      _logger.e('Error picking file: $e');
       return null;
     }
   }
@@ -174,7 +176,7 @@ class MediaServiceImpl implements MediaService {
       );
       return res?.files.map((e) => _createFileResult(File(e.path!))).toList();
     } catch (e) {
-      debugPrint("Error picking files: $e");
+      _logger.e('Error picking files: $e');
       return null;
     }
   }
@@ -187,12 +189,26 @@ class MediaServiceImpl implements MediaService {
   @override
   Future<FileResult?> getImage({bool fromCamera = false}) async {
     try {
+      if (!kIsWeb) {
+        // Check permissions for mobile platforms
+        final permission = fromCamera ? Permission.camera : Permission.photos;
+        var status = await permission.status;
+        if (!status.isGranted) {
+          status = await permission.request();
+          if (!status.isGranted) {
+            _logger
+                .w('Permission denied for ${fromCamera ? "camera" : "photos"}');
+            return null;
+          }
+        }
+      }
+
       final res = await _picker.pickImage(
         source: fromCamera ? ImageSource.camera : ImageSource.gallery,
       );
       return res == null ? null : _createFileResult(File(res.path));
     } catch (e) {
-      debugPrint("Error picking image: $e");
+      _logger.e('Error picking image: $e');
       return null;
     }
   }
@@ -203,10 +219,22 @@ class MediaServiceImpl implements MediaService {
   @override
   Future<List<FileResult>?> getMultipleImages() async {
     try {
+      if (!kIsWeb) {
+        // Check photos permission for mobile platforms
+        var status = await Permission.photos.status;
+        if (!status.isGranted) {
+          status = await Permission.photos.request();
+          if (!status.isGranted) {
+            _logger.w('Permission denied for photos');
+            return null;
+          }
+        }
+      }
+
       final res = await _picker.pickMultiImage();
       return res.map((e) => _createFileResult(File(e.path))).toList();
     } catch (e) {
-      debugPrint("Error picking multiple images: $e");
+      _logger.e('Error picking multiple images: $e');
       return null;
     }
   }
@@ -239,7 +267,7 @@ class MediaServiceImpl implements MediaService {
 
       return file.copyWith(path: resizedFile.path);
     } catch (e) {
-      debugPrint("Error resizing image: $e");
+      _logger.e('Error resizing image: $e');
       rethrow;
     }
   }
@@ -287,13 +315,13 @@ class MediaServiceImpl implements MediaService {
         path = (await getApplicationDocumentsDirectory()).path;
       }
 
-      final file = File(
+      final savedFile = File(
           '$path/$name${DateTime.now().microsecondsSinceEpoch}.$extension');
-      await file.writeAsBytes(bytes);
+      await savedFile.writeAsBytes(bytes);
 
-      return _createFileResult(file);
+      return _createFileResult(savedFile);
     } catch (e) {
-      debugPrint("Error saving file: $e");
+      _logger.e('Error saving file: $e');
       return null;
     }
   }

@@ -30,24 +30,28 @@ extension StringExtension on String {
 
   /// Checks if the string represents an image file path/URL.
   bool get isImage {
+    if (isEmpty || !contains('.')) return false;
     const extensions = {"png", "jpg", "jpeg", "heic", "gif"};
     return extensions.contains(split(".").last.toLowerCase());
   }
 
   /// Checks if the string represents a document file path/URL.
   bool get isDocument {
+    if (isEmpty || !contains('.')) return false;
     const extensions = {"doc", "docx", "pdf"};
     return extensions.contains(split(".").last.toLowerCase());
   }
 
   /// Checks if the string represents an audio file path/URL.
   bool get isAudio {
+    if (isEmpty || !contains('.')) return false;
     const extensions = {"mp3"};
     return extensions.contains(split(".").last.toLowerCase());
   }
 
   /// Checks if the string represents a video file path/URL.
   bool get isVideo {
+    if (isEmpty || !contains('.')) return false;
     const extensions = {"mp4", "mov"};
     return extensions.contains(split(".").last.toLowerCase());
   }
@@ -69,10 +73,12 @@ extension StringExtension on String {
   String? get nullIfEmpty => isEmpty ? null : this;
 
   /// Adds a suffix to the string if it is not empty.
-  String? withSuffix(String suffix) => nullIfEmpty == null ? null : '$this$suffix';
+  String? withSuffix(String suffix) =>
+      nullIfEmpty == null ? null : '$this$suffix';
 
   /// Adds a prefix to the string if it is not empty.
-  String? withPrefix(String prefix) => nullIfEmpty == null ? null : '$prefix$this';
+  String? withPrefix(String prefix) =>
+      nullIfEmpty == null ? null : '$prefix$this';
 
   /// Converts the string to title case (e.g., "hello world" -> "Hello World").
   String toTitleCase() {
@@ -93,7 +99,8 @@ extension StringExtension on String {
 
   /// Checks if the string is a strong password.
   bool get isStrongPassword {
-    const passwordRegExpString = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    const passwordRegExpString =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     return RegExp(passwordRegExpString).hasMatch(this);
   }
 }

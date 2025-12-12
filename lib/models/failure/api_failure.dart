@@ -11,23 +11,32 @@ class ApiFailure extends Failure {
 
   factory ApiFailure.fromHttpErrorMap(
       Map<String, dynamic> error, dynamic headers) {
-    // checking the error format
-    // so i can apporpriately get the error message
-    // Note: input errors are different from normal error
+    // Checking the error format to appropriately get the error message.
+    // Note: input errors are different from normal error.
     late String errorMessage;
-    //input error test
-    if (error.containsKey("errors")) {
-      //get the first error model in the list then
-      //the msg of the error
-      errorMessage = error["errors"][0]["msg"];
+
+    // Input error test - check for errors array
+    if (error.containsKey("errors") && error["errors"] is List) {
+      final errors = error["errors"] as List;
+      if (errors.isNotEmpty && errors[0] is Map) {
+        final firstError = errors[0] as Map;
+        errorMessage = firstError["msg"]?.toString() ??
+            firstError["message"]?.toString() ??
+            "Error";
+      } else {
+        errorMessage = "Error";
+      }
     }
-    // normal error test
-    else if (error.containsKey("message")) {
-      errorMessage = error["message"];
-    } //default
-    else if (error.containsKey("error")) {
-      errorMessage = error["error"]["message"];
-    } //default
+    // Normal error test - check for direct message
+    else if (error.containsKey("message") && error["message"] is String) {
+      errorMessage = error["message"] as String;
+    }
+    // Check for nested error object
+    else if (error.containsKey("error") && error["error"] is Map) {
+      final errorObj = error["error"] as Map;
+      errorMessage = errorObj["message"]?.toString() ?? "Error";
+    }
+    // Default fallback
     else {
       errorMessage = "Error";
     }
