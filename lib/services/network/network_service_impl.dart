@@ -40,6 +40,18 @@ class NetworkServiceImpl implements NetworkService {
 
   late final Dio _dio;
 
+  /// Builds request options with authorization header and custom headers.
+  Options _buildRequestOptions({
+    Map<String, dynamic>? headers,
+  }) {
+    return Options(
+      headers: {
+        if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+        ...headers ?? {},
+      },
+    );
+  }
+
   /// Sends a GET request to the specified [path] with optional [queryParams].
   @override
   Future<HeaderApiResponse> get(
@@ -53,12 +65,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         queryParameters: queryParams,
         cancelToken: cancelToken,
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -79,12 +86,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         data: data,
         cancelToken: cancelToken,
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -110,12 +112,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         cancelToken: cancelToken,
         data: _generateFormData(data, file),
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -141,12 +138,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         cancelToken: cancelToken,
         data: _generateFormData(data, file),
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -154,7 +146,7 @@ class NetworkServiceImpl implements NetworkService {
     }
   }
 
-  /// Sends a PATCH request with form data, allowing file uploads.
+  /// Sends a PUT request with form data, allowing file uploads.
   ///
   /// - [data]: Additional form fields to be sent.
   /// - [file]: A map of files where the key represents the field name and
@@ -168,16 +160,11 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic>? file,
   }) async {
     try {
-      final res = await _dio.patch(
+      final res = await _dio.put(
         path,
         cancelToken: cancelToken,
         data: _generateFormData(data, file),
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -198,12 +185,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         data: data,
         cancelToken: cancelToken,
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -224,12 +206,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         data: data,
         cancelToken: cancelToken,
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -250,12 +227,7 @@ class NetworkServiceImpl implements NetworkService {
         path,
         data: data,
         cancelToken: cancelToken,
-        options: Options(
-          headers: {
-            'Authorization': accessToken == null ? null : 'Bearer $accessToken',
-            ...headers ?? {},
-          },
-        ),
+        options: _buildRequestOptions(headers: headers),
       );
       return _handleResponse(res);
     } on DioException catch (e) {
@@ -279,9 +251,15 @@ class NetworkServiceImpl implements NetworkService {
       );
 
       if (response.statusCode == 200) {
-        final newAccessToken = response.data['access_token'];
-        accessToken = newAccessToken; // Update access token
-        return newAccessToken;
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          final newAccessToken = responseData['access_token'] as String?;
+          if (newAccessToken != null && newAccessToken.isNotEmpty) {
+            accessToken = newAccessToken;
+            return newAccessToken;
+          }
+        }
+        _logger.e('Invalid token refresh response format');
       }
     } catch (e) {
       _logger.e('Failed to refresh token: $e');
@@ -320,12 +298,31 @@ class NetworkServiceImpl implements NetworkService {
     _logger.e(error.response?.headers, functionName: "error headers 2");
     _logger.e(error.response, functionName: "error response");
 
+    // Handle network connectivity issues
+    if (error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.sendTimeout ||
+        error.type == DioExceptionType.receiveTimeout) {
+      throw ApiFailure(
+        'Connection timeout. Please check your internet connection.',
+        statusCode: statusCode,
+        data: responseData,
+      );
+    }
+
+    if (error.type == DioExceptionType.connectionError) {
+      throw ApiFailure(
+        'No internet connection. Please check your network settings.',
+        statusCode: statusCode,
+        data: responseData,
+      );
+    }
+
     if (statusCode == 401 || statusCode == 403) {
       throw ApiFailure(
-        headers: error.response?.headers.map,
         errorMessage == 'Something went wrong!'
             ? 'Authentication error, please login'
             : errorMessage,
+        headers: error.response?.headers.map,
         statusCode: statusCode,
         event: responseEvent,
         data: responseData,
@@ -337,8 +334,8 @@ class NetworkServiceImpl implements NetworkService {
     }
 
     throw ApiFailure(
-      headers: error.response?.headers.map,
       errorMessage,
+      headers: error.response?.headers.map,
       statusCode: statusCode,
       event: responseEvent,
       data: responseData,
@@ -396,20 +393,30 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic> map = <String, dynamic>{};
 
     if (file != null) {
-      for (var value in file.entries) {
-        if (value.value is List) {
-          map[value.key] = (value.value as List)
-              .map((e) => MultipartFile.fromFileSync(e))
+      for (var entry in file.entries) {
+        if (entry.value is List) {
+          map[entry.key] = (entry.value as List)
+              .map((e) => MultipartFile.fromFileSync(e.toString()))
               .toList();
         } else {
-          map[value.key] = MultipartFile.fromFileSync(value.value);
+          map[entry.key] = MultipartFile.fromFileSync(entry.value.toString());
         }
       }
     }
 
     FormData formData = FormData.fromMap(map);
     if (data != null) {
-      formData.fields.addAll((data as Map<String, String>).entries);
+      if (data is Map<String, dynamic>) {
+        formData.fields.addAll(
+          data.entries.map((e) => MapEntry(e.key, e.value.toString())),
+        );
+      } else if (data is Map) {
+        // Handle other Map types
+        formData.fields.addAll(
+          data.entries
+              .map((e) => MapEntry(e.key.toString(), e.value.toString())),
+        );
+      }
     }
 
     return formData;
