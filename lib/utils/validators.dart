@@ -3,7 +3,22 @@ import 'app_regex.dart';
 /// Utility class for validating user input.
 class Validator {
   /// Validates a password.
+  /// 
   /// Returns an error message if the password is invalid, otherwise null.
+  /// 
+  /// The password must:
+  /// - Be at least [limit] characters long (default: 6)
+  /// - Contain at least one uppercase letter
+  /// - Contain at least one lowercase letter
+  /// - Contain at least one number
+  /// - Contain at least one special character
+  /// 
+  /// Example:
+  /// ```dart
+  /// String? error = Validator.password('MyPass123!'); // null
+  /// String? error = Validator.password('weak'); // Error message
+  /// String? error = Validator.password('SecurePass1!', limit: 10); // null
+  /// ```
   static String? password(String? value, {String title = "Password", int limit = 6}) {
     if (value == null || value.isEmpty) {
       return "${title.toUpperCase()} cannot be empty";
@@ -22,7 +37,14 @@ class Validator {
   }
 
   /// Validates an email address.
+  /// 
   /// Returns an error message if the email is invalid, otherwise null.
+  /// 
+  /// Example:
+  /// ```dart
+  /// String? error = Validator.email('user@example.com'); // null
+  /// String? error = Validator.email('invalid'); // "Invalid email address"
+  /// ```
   static String? email(String? email) {
     if (email == null || email.isEmpty) {
       return "Email address cannot be empty";
@@ -33,7 +55,15 @@ class Validator {
   }
 
   /// Validates a phone number.
+  /// 
   /// Returns an error message if the phone number is invalid, otherwise null.
+  /// 
+  /// Example:
+  /// ```dart
+  /// String? error = Validator.phone('+1234567890'); // null
+  /// String? error = Validator.phone('123'); // "Invalid Phone Number"
+  /// String? error = Validator.phone('', 'Mobile'); // "Mobile cannot be empty"
+  /// ```
   static String? phone(String? phone, [String title = "Phone Number"]) {
     if (phone == null || phone.isEmpty) {
       return "$title cannot be empty";
@@ -66,7 +96,16 @@ class Validator {
   }
 
   /// Validates that a field is not empty.
-  /// Returns an error message if the field is empty, otherwise null.
+  /// 
+  /// Returns an error message if the field is empty (null, empty string, or whitespace only),
+  /// otherwise null.
+  /// 
+  /// Example:
+  /// ```dart
+  /// String? error = Validator.emptyField('value'); // null
+  /// String? error = Validator.emptyField(''); // "Field is required"
+  /// String? error = Validator.emptyField('   ', 'Username'); // "Username is required"
+  /// ```
   static String? emptyField(String? value, [String title = "Field"]) {
     return (value == null || value.trim().isEmpty) ? '$title is required' : null;
   }

@@ -187,7 +187,7 @@ void main() {
       test('should convert string to slug format', () {
         expect('Hello World'.toSlug(), equals('hello-world'));
         expect('This is a Test!'.toSlug(), equals('this-is-a-test'));
-        expect('Special@#$%Characters'.toSlug(), equals('special-characters'));
+        expect('Special@#\$%Characters'.toSlug(), equals('special-characters'));
       });
 
       test('should handle edge cases', () {

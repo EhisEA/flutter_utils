@@ -30,7 +30,7 @@ A comprehensive Flutter utilities package that provides reusable components, ext
 - **📊 State Management**: Async state handling and view models
 - **🎨 UI Widgets**: Reusable custom widgets and components
 - **💾 Local Storage**: Caching and data persistence utilities
-- **🔧 Utils**: Validators, formatters, and helper functions
+- **🔧 Utils**: Validator, formatters, and helper functions
 
 ## 📦 Installation
 
@@ -355,20 +355,25 @@ Consumer<UserViewModel>(
 
 ### Utils
 
-#### Validators
+#### Validator
 
 ```dart
 // Email validation
-bool isValidEmail = Validators.isEmail('user@example.com');
+String? emailError = Validator.email('user@example.com'); // null if valid
+String? invalidEmail = Validator.email('invalid-email'); // Returns error message
 
 // Phone validation
-bool isValidPhone = Validators.isPhoneNumber('+1234567890');
+String? phoneError = Validator.phone('+1234567890'); // null if valid
+String? invalidPhone = Validator.phone('123'); // Returns error message
 
 // Password validation
-bool isValidPassword = Validators.isStrongPassword('MyPass123!');
+String? passwordError = Validator.password('MyPass123!'); // null if valid
+String? weakPassword = Validator.password('weak'); // Returns error message
 
 // Required field validation
-String? error = Validators.required('', 'This field is required');
+String? error = Validator.emptyField('', 'This field is required');
+String? nameError = Validator.name('A'); // Returns error for too short name
+String? fullNameError = Validator.fullname('John'); // Returns error for invalid full name
 ```
 
 #### AppLogger

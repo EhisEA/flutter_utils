@@ -1,3 +1,28 @@
+## 0.0.2
+
+### 🐛 Bug Fixes
+* Fixed variable shadowing bug in MediaService saveFile method
+* Fixed unsafe array access in ApiFailure factory method
+* Improved type safety in LocalCache methods (getToken, getUserData, getMapData)
+* Added input validation to string extension file type checks (isImage, isDocument, isAudio, isVideo)
+
+### 🔒 Security
+* Removed sensitive data logging in LocalCache (tokens, passwords, secrets are no longer logged)
+
+### ✨ Features
+* Added permission checks to MediaService image picking methods (getImage, getMultipleImages)
+* Added `when` method to AsyncState for pattern matching
+
+### 🔧 Improvements
+* Replaced all debugPrint calls with AppLogger in MediaService
+* Improved error handling in ApiFailure factory method with proper null safety
+* Updated pubspec.yaml description to be more descriptive
+* Enhanced type safety across the codebase
+
+### 📚 Documentation
+* Fixed Validator class naming inconsistency in README
+* Updated documentation examples to match actual API
+
 ## 0.0.1
 
 ### ✨ Features
