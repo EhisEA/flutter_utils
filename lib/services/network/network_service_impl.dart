@@ -59,11 +59,13 @@ class NetworkServiceImpl implements NetworkService {
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? queryParams,
+    Object? data,
   }) async {
     try {
       final res = await _dio.get(
         path,
         queryParameters: queryParams,
+        data: data,
         cancelToken: cancelToken,
         options: _buildRequestOptions(headers: headers),
       );
