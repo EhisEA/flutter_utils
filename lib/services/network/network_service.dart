@@ -17,6 +17,7 @@ abstract class NetworkService {
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? queryParams,
+    Object? data,
   });
 
   /// Sends a POST request to the specified [path] with optional [data].
