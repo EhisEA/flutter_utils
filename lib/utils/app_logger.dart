@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
+
 // Black:   \x1B[30m
 // Red:     \x1B[31m
 // Green:   \x1B[32m
@@ -30,7 +32,8 @@ class AppLogger {
   const AppLogger(this.type);
 
   /// Log a message at level [Level.verbose].
-  void v(dynamic message, {dynamic error, StackTrace? stackTrace, String? functionName}) {
+  void v(dynamic message,
+      {dynamic error, StackTrace? stackTrace, String? functionName}) {
     _log(
       message,
       color: LoggerColor.magenta,
@@ -41,7 +44,8 @@ class AppLogger {
   }
 
   /// Log a message at level [Level.debug].
-  void d(dynamic message, {dynamic error, StackTrace? stackTrace, String? functionName}) {
+  void d(dynamic message,
+      {dynamic error, StackTrace? stackTrace, String? functionName}) {
     _log(
       message,
       color: LoggerColor.green,
@@ -52,7 +56,8 @@ class AppLogger {
   }
 
   /// Log a message at level [Level.info].
-  void i(dynamic message, {dynamic error, StackTrace? stackTrace, String? functionName}) {
+  void i(dynamic message,
+      {dynamic error, StackTrace? stackTrace, String? functionName}) {
     _log(
       message,
       color: LoggerColor.cyan,
@@ -63,7 +68,8 @@ class AppLogger {
   }
 
   /// Log a message at level [Level.warning].
-  void w(dynamic message, {dynamic error, StackTrace? stackTrace, String? functionName}) {
+  void w(dynamic message,
+      {dynamic error, StackTrace? stackTrace, String? functionName}) {
     _log(
       message,
       color: LoggerColor.yellow,
@@ -74,7 +80,8 @@ class AppLogger {
   }
 
   /// Log a message at level [Level.error].
-  void e(dynamic message, {dynamic error, StackTrace? stackTrace, String? functionName}) {
+  void e(dynamic message,
+      {dynamic error, StackTrace? stackTrace, String? functionName}) {
     _log(
       message,
       color: LoggerColor.red,
@@ -109,6 +116,9 @@ class AppLogger {
     StackTrace? stackTrace,
     String? functionName,
   }) {
+    // Skip logging in release mode
+    if (!kDebugMode) return;
+
     final formattedMessage = '$color${message.toString()}${LoggerColor.reset}';
     final logName =
         '${LoggerColor.white}${type.toString()}${functionName == null ? "" : '.$functionName'}${LoggerColor.reset}';
